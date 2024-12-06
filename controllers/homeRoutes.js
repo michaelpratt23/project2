@@ -79,4 +79,17 @@ router.get("/login", (req, res) => {
   res.render("login");
 });
 
+router.get("/login", (req, res) => {
+  // If the user is already logged in, redirect them to their profile
+  if (req.session.logged_in) {
+    res.redirect("/profile");
+    return;
+  }
+
+  res.render("login");
+});
+router.get("/signup", (req, res) => {
+  res.render("login"); // Render the same template if login and signup are combined
+});
+
 module.exports = router;
