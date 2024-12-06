@@ -2,6 +2,7 @@ const router = require("express").Router();
 const { Project, User } = require("../models");
 const withAuth = require("../utils/auth");
 
+// Homepage route
 router.get("/", async (req, res) => {
   try {
     // Get all projects and JOIN with user data
@@ -27,6 +28,7 @@ router.get("/", async (req, res) => {
   }
 });
 
+// Route to view a specific project
 router.get("/project/:id", async (req, res) => {
   try {
     const projectData = await Project.findByPk(req.params.id, {
@@ -49,10 +51,10 @@ router.get("/project/:id", async (req, res) => {
   }
 });
 
-// Use withAuth middleware to prevent access to route
+// Profile route (protected)
 router.get("/profile", withAuth, async (req, res) => {
   try {
-    // Find the logged in user based on the session ID
+    // Find the logged-in user based on the session ID
     const userData = await User.findByPk(req.session.user_id, {
       attributes: { exclude: ["password"] },
       include: [{ model: Project }],
@@ -69,16 +71,7 @@ router.get("/profile", withAuth, async (req, res) => {
   }
 });
 
-router.get("/login", (req, res) => {
-  // If the user is already logged in, redirect the request to another route
-  if (req.session.logged_in) {
-    res.redirect("/profile");
-    return;
-  }
-
-  res.render("login");
-});
-
+// Login route
 router.get("/login", (req, res) => {
   // If the user is already logged in, redirect them to their profile
   if (req.session.logged_in) {
@@ -86,10 +79,17 @@ router.get("/login", (req, res) => {
     return;
   }
 
-  res.render("login");
+  res.render("login"); // Render the login template
 });
+
 router.get("/signup", (req, res) => {
-  res.render("login"); // Render the same template if login and signup are combined
+  // If the user is already logged in, redirect them to their profile
+  if (req.session.logged_in) {
+    res.redirect("/profile");
+    return;
+  }
+
+  res.render("signup"); // Ensure this renders the signup.handlebars
 });
 
 module.exports = router;
