@@ -22,3 +22,5 @@ const signupFormHandler = async (event) => {
 document
   .querySelector(".signup-form")
   .addEventListener("submit", signupFormHandler);
+
+console.log("Serving static files from:", path.join(__dirname, "public"));

@@ -1,8 +1,6 @@
-// server is bringin in all the packages that it needs to get things running
-
 const path = require("path");
-const express = require("express"); // express needed for developing the API libraries
-const session = require("express-session"); // hook up sessions w express
+const express = require("express");
+const session = require("express-session");
 const exphbs = require("express-handlebars");
 const routes = require("./controllers");
 const helpers = require("./utils/helpers");
@@ -39,12 +37,25 @@ app.set("view engine", "handlebars");
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static(path.join(__dirname, "public")));
+app.use(express.static(path.join(__dirname, "public"))); // Ensure correct public folder
+
+console.log("Serving static files from:", path.join(__dirname, "public"));
 
 app.use(routes);
 
-sequelize.sync({ force: false }).then(() => {
-  app.listen(PORT, () => console.log("Now listening"));
+// Catch-all route for unknown endpoints
+app.use((req, res) => {
+  res.status(404).send("Page Not Found");
 });
 
-//
+// Error handling middleware
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).send("Something went wrong!");
+});
+
+sequelize.sync({ force: false }).then(() => {
+  app.listen(PORT, () =>
+    console.log(`Now listening on http://localhost:${PORT}`)
+  );
+});
