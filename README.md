@@ -1,4 +1,6 @@
-# Dunbar: Meaningful Connections
+# dunbar: Meaningful Connections
+
+![Homepage Screenshot](assets/homepage.png)
 
 ## Overview
 
